@@ -1,0 +1,500 @@
+{
+ "tools": [
+  {
+   "name": "list_my_workspaces",
+   "title": "List my workspaces",
+   "description": "Return every Imans workspace the authenticated user is an active member of and this connection is authorized for, with role slug and whether it is the connector's current default. Does NOT list workspaces the user has been invited to but not yet joined.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {},
+    "additionalProperties": false
+   },
+   "annotations": {
+    "title": "List my workspaces",
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   }
+  },
+  {
+   "name": "get_sales_insights",
+   "title": "Sales insights",
+   "description": "Return broad workspace sales insights for a date range: KPIs, comparison to the previous window, configurable grouping, profit coverage, and top products. Good default for open-ended questions like 'how is this month going?'. Pass company to restrict every block of the answer to one legal entity (CNPJ) of a multi-company workspace. Does NOT drill into a single product — use get_product_sales_insights for that.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "date_from": {
+      "type": "string",
+      "description": "Inclusive start date in ISO format (YYYY-MM-DD). Pass together with date_to, computed from today's date for relative ranges like 'last month' or 'this quarter'. Omit both date_from and date_to when the user asks open-ended questions like 'how is sales going?' — the tool will use the user's preferred default window from their settings."
+     },
+     "date_to": {
+      "type": "string",
+      "description": "Inclusive end date in ISO format (YYYY-MM-DD). Pass together with date_from. Must not precede it."
+     },
+     "group_by": {
+      "type": "string",
+      "enum": [
+       "day",
+       "week",
+       "month",
+       "channel",
+       "status"
+      ],
+      "description": "Optional grouping dimension."
+     },
+     "include_profit": {
+      "type": "boolean",
+      "default": false
+     },
+     "include_top_products": {
+      "type": "boolean",
+      "default": false
+     },
+     "top_products_limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 10
+     },
+     "company": {
+      "type": "string",
+      "description": "Optional company (legal entity / CNPJ) name to restrict the result to. Workspaces may operate through several companies; matching is case-insensitive and accepts the short name. Omit to cover every company. An unknown or ambiguous name returns an error listing the workspace's companies."
+     },
+     "workspace_code": {
+      "type": "string"
+     }
+    },
+    "additionalProperties": false
+   },
+   "annotations": {
+    "title": "Sales insights",
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   }
+  },
+  {
+   "name": "get_sales_by_channel",
+   "title": "Sales by channel",
+   "description": "Split revenue and order count by sales-order classification (marketplace, ecommerce, wholesale, etc.) for a date range. Returns one row per classification that has activity in the window, sorted by revenue descending, with each row's share of total. Pass company to restrict the split to one legal entity (CNPJ) of a multi-company workspace. Does NOT return a time series — use get_sales_by_period for that.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "date_from": {
+      "type": "string"
+     },
+     "date_to": {
+      "type": "string"
+     },
+     "include_uninvoiced": {
+      "type": "boolean"
+     },
+     "include_returns": {
+      "type": "boolean"
+     },
+     "raw": {
+      "type": "boolean"
+     },
+     "company": {
+      "type": "string",
+      "description": "Optional company (legal entity / CNPJ) name to restrict the result to. Workspaces may operate through several companies; matching is case-insensitive and accepts the short name. Omit to cover every company. An unknown or ambiguous name returns an error listing the workspace's companies."
+     },
+     "workspace_code": {
+      "type": "string"
+     }
+    },
+    "additionalProperties": false
+   },
+   "annotations": {
+    "title": "Sales by channel",
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   }
+  },
+  {
+   "name": "get_sales_by_period",
+   "title": "Sales by period",
+   "description": "Bucket revenue and order count by day, week, month, quarter, semester, or year for a date range using the workspace's 'sold amount' preset. The date axis follows the Sales Reference Date ladder: pass date_axis (order_date/invoiced_date/delivery_date) to pin it explicitly, otherwise the caller's order-date preference applies. Bucket edges are in the workspace timezone. Defaults respect WorkspaceSettings.require_invoice_for_totals and the returns setting; pass include_uninvoiced=true / include_returns / raw=true to widen them. Pass company to restrict the series to one legal entity (CNPJ) of a multi-company workspace. Returns the resolved preset and date-axis metadata alongside the series.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "date_from": {
+      "type": "string"
+     },
+     "date_to": {
+      "type": "string"
+     },
+     "bucket": {
+      "type": "string",
+      "enum": [
+       "day",
+       "week",
+       "month",
+       "quarter",
+       "semester",
+       "year"
+      ],
+      "default": "day"
+     },
+     "date_axis": {
+      "type": "string",
+      "enum": [
+       "order_date",
+       "invoiced_date",
+       "invoice_date",
+       "delivery_date"
+      ]
+     },
+     "include_uninvoiced": {
+      "type": "boolean"
+     },
+     "include_returns": {
+      "type": "boolean"
+     },
+     "raw": {
+      "type": "boolean"
+     },
+     "company": {
+      "type": "string",
+      "description": "Optional company (legal entity / CNPJ) name to restrict the result to. Workspaces may operate through several companies; matching is case-insensitive and accepts the short name. Omit to cover every company. An unknown or ambiguous name returns an error listing the workspace's companies."
+     },
+     "workspace_code": {
+      "type": "string"
+     }
+    },
+    "additionalProperties": false
+   },
+   "annotations": {
+    "title": "Sales by period",
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   }
+  },
+  {
+   "name": "get_sales_top_products",
+   "title": "Top products",
+   "description": "Return the top-selling product variants for a date range, ranked by revenue or by units sold. Each row includes product name, SKU, variant id, total revenue, total units, and distinct order count. Pass company to rank within one legal entity (CNPJ) of a multi-company workspace. Does NOT include per-product trend data — use get_product_sales_insights for that.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "date_from": {
+      "type": "string"
+     },
+     "date_to": {
+      "type": "string"
+     },
+     "metric": {
+      "type": "string",
+      "enum": [
+       "revenue",
+       "units"
+      ],
+      "default": "revenue"
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 50,
+      "default": 10
+     },
+     "include_uninvoiced": {
+      "type": "boolean"
+     },
+     "include_returns": {
+      "type": "boolean"
+     },
+     "raw": {
+      "type": "boolean"
+     },
+     "company": {
+      "type": "string",
+      "description": "Optional company (legal entity / CNPJ) name to restrict the result to. Workspaces may operate through several companies; matching is case-insensitive and accepts the short name. Omit to cover every company. An unknown or ambiguous name returns an error listing the workspace's companies."
+     },
+     "workspace_code": {
+      "type": "string"
+     }
+    },
+    "additionalProperties": false
+   },
+   "annotations": {
+    "title": "Top products",
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   }
+  },
+  {
+   "name": "get_product_sales_insights",
+   "title": "Product sales insights",
+   "description": "Drill into a single product's sales performance: revenue, units, order count, trend vs prior window, and top channels. Identify the product by SKU or product_query (free-text — we resolve it to a single product first). Pass company to measure that product within one legal entity (CNPJ) of a multi-company workspace; the catalog itself is shared across companies. Does NOT return workspace-wide metrics — use get_sales_insights for those.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "sku": {
+      "type": "string",
+      "description": "Exact product SKU. Preferred over product_query."
+     },
+     "product_query": {
+      "type": "string",
+      "description": "Free-text product name or partial text when SKU is not known. The service uses fuzzy + semantic matching."
+     },
+     "date_from": {
+      "type": "string",
+      "description": "Inclusive start date in ISO format (YYYY-MM-DD). Pass together with date_to, computed from today's date for relative ranges like 'last month' or 'this quarter'. Omit both date_from and date_to when the user asks open-ended questions like 'how is sales going?' — the tool will use the user's preferred default window from their settings."
+     },
+     "date_to": {
+      "type": "string",
+      "description": "Inclusive end date in ISO format (YYYY-MM-DD). Pass together with date_from. Must not precede it."
+     },
+     "company": {
+      "type": "string",
+      "description": "Optional company (legal entity / CNPJ) name to restrict the result to. Workspaces may operate through several companies; matching is case-insensitive and accepts the short name. Omit to cover every company. An unknown or ambiguous name returns an error listing the workspace's companies."
+     },
+     "workspace_code": {
+      "type": "string"
+     }
+    },
+    "additionalProperties": false
+   },
+   "annotations": {
+    "title": "Product sales insights",
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   }
+  },
+  {
+   "name": "discover",
+   "title": "Discover Imans",
+   "description": "Learn what this workspace's Imans data, canonical metrics, operations and actions are, whether you can use each one (available, permission_denied, setup_required, unsupported — with the reason and next step), recommended workflows and the coverage manifest. Call with no section for the index, with a section for compact summaries, with a key, with or without its section, for one full descriptor or workflow instructions, and with search to find items by what they do. Returns product metadata only — never business rows or counts.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "section": {
+      "type": "string",
+      "enum": [
+       "index",
+       "data",
+       "metrics",
+       "operations",
+       "capabilities",
+       "workflows",
+       "coverage"
+      ],
+      "description": "Discovery section; omit for the index, or with key to find the key's section."
+     },
+     "key": {
+      "type": "string",
+      "description": "One descriptor, in full. Without section, a key in several sections is refused, naming them."
+     },
+     "search": {
+      "type": "string",
+      "description": "English terms: the best matches across sections, or inside the given section. Cannot be combined with key or used on coverage."
+     },
+     "workspace_code": {
+      "type": "string",
+      "description": "Optional workspace code; defaults to the connection's default workspace."
+     }
+    },
+    "additionalProperties": false
+   },
+   "annotations": {
+    "title": "Discover Imans",
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   }
+  },
+  {
+   "name": "get_pricing",
+   "title": "Read pricing",
+   "description": "Read pricing plans and explain prices: Price Lists and their layers (campaign windows), Intended Prices with publication and drift state, stored projections, assumptions, routes, exercises and the price change audit. Without object: the index. With object resolved_prices plus target_kind and target_ref: why that target has its price. Projections are forecasts, not realized profit. Does not configure routes, publish prices or return credentials.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "object": {
+      "type": "string",
+      "enum": [
+       "price_lists",
+       "price_list_items",
+       "price_list_item_projections",
+       "resolved_prices",
+       "pricing_assumptions",
+       "price_list_routes",
+       "pricing_exercises",
+       "price_change_logs"
+      ]
+     },
+     "key": {
+      "type": "string",
+      "description": "One keyed item id."
+     },
+     "price_list_id": {
+      "type": "integer"
+     },
+     "classification_id": {
+      "type": "integer",
+      "description": "Pricing Context; omit for context-free."
+     },
+     "company_id": {
+      "type": "integer"
+     },
+     "target_kind": {
+      "type": "string",
+      "enum": [
+       "sku",
+       "listing"
+      ]
+     },
+     "target_ref": {
+      "type": "string",
+      "description": "SKU code (or id) or listing id."
+     },
+     "kind": {
+      "type": "string"
+     },
+     "level": {
+      "type": "string"
+     },
+     "source": {
+      "type": "string"
+     },
+     "status": {
+      "type": "string"
+     },
+     "is_active": {
+      "type": "boolean"
+     },
+     "search": {
+      "type": "string"
+     },
+     "page": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "page_size": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100
+     },
+     "workspace_code": {
+      "type": "string",
+      "description": "Optional workspace code; defaults to the connection's default workspace."
+     }
+    },
+    "additionalProperties": false
+   },
+   "annotations": {
+    "title": "Read pricing",
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   }
+  },
+  {
+   "name": "preview_publish_prices",
+   "title": "Preview price publication",
+   "description": "Show the exact prices a publication through an existing Olist Tiny or Bling price route would send — Imans's resolved prices that changed since the route's last publication, or the SKUs you name — and whether the user must approve it in Imans. Sends nothing; call publish_prices to submit it. Amounts always come from Imans's pricing rules.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "route_id": {
+      "type": "integer",
+      "description": "An existing publish Price List Route (see get_pricing object price_list_routes). Routes are created and changed in Imans only."
+     },
+     "targets": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 255
+      },
+      "maxItems": 100,
+      "description": "SKU codes to publish. Omit to publish every price that changed since the route's last publication (up to 100)."
+     },
+     "forced": {
+      "type": "boolean",
+      "default": false,
+      "description": "Also re-send prices already published at the same value (repairs drift on the ERP)."
+     },
+     "workspace_code": {
+      "type": "string",
+      "description": "Optional workspace code; defaults to the connection's default workspace."
+     }
+    },
+    "required": [
+     "route_id"
+    ],
+    "additionalProperties": false
+   },
+   "annotations": {
+    "title": "Preview price publication",
+    "readOnlyHint": true,
+    "destructiveHint": false,
+    "idempotentHint": true,
+    "openWorldHint": false
+   }
+  },
+  {
+   "name": "publish_prices",
+   "title": "Publish prices",
+   "description": "Publish Imans's resolved prices through an existing Olist Tiny or Bling price route. Returns a durable receipt — pending_approval with the Imans URL where the user approves this exact batch; pending is not done. Each price then reports dispatch, ERP acceptance and readback verification separately; only verified means the ERP shows it. An uncertain price is reconciled by readback, never re-sent. Reuse the same idempotency_key to retry after a timeout; a new batch needs a new key.",
+   "inputSchema": {
+    "type": "object",
+    "properties": {
+     "route_id": {
+      "type": "integer",
+      "description": "An existing publish Price List Route (see get_pricing object price_list_routes). Routes are created and changed in Imans only."
+     },
+     "targets": {
+      "type": "array",
+      "items": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 255
+      },
+      "maxItems": 100,
+      "description": "SKU codes to publish. Omit to publish every price that changed since the route's last publication (up to 100)."
+     },
+     "forced": {
+      "type": "boolean",
+      "default": false,
+      "description": "Also re-send prices already published at the same value (repairs drift on the ERP)."
+     },
+     "idempotency_key": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 128,
+      "description": "One key per intended publication; reuse it only to retry."
+     },
+     "workspace_code": {
+      "type": "string",
+      "description": "Optional workspace code; defaults to the connection's default workspace."
+     }
+    },
+    "required": [
+     "route_id",
+     "idempotency_key"
+    ],
+    "additionalProperties": false
+   },
+   "annotations": {
+    "title": "Publish prices",
+    "readOnlyHint": false,
+    "destructiveHint": true,
+    "idempotentHint": true,
+    "openWorldHint": true
+   }
+  }
+ ]
+}

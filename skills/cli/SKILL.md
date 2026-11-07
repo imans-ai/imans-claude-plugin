@@ -1,5 +1,12 @@
 ---
-description: Use the Imans CLI to query Imans workspace, catalog, products, variants, and sales orders as JSON. Use when the user asks Claude Code about Imans data, CLI-based Imans automation, or business data exports.
+name: cli
+description: >-
+  Scripted Imans automation with the `imans` command-line tool in a terminal (Claude Code): shell
+  scripts, CI jobs and JSON pipelines over workspace, catalog, products, variants and sales orders
+  through the Imans public API. Use only when the user explicitly wants the CLI, a shell script or
+  automation outside the chat (e.g. "usa o imans CLI", "script para exportar produtos", "rodar no CI").
+  Do NOT use for normal questions about Imans data — the Imans MCP tools and the other Imans skills
+  answer those.
 ---
 
 # Imans CLI

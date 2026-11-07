@@ -1,11 +1,31 @@
 {
+  "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "imans",
-  "description": "Use the Imans CLI to query Imans workspace, catalog, and sales order data from Claude Code.",
-  "version": "1.0.0",
+  "displayName": "Imans",
+  "version": "2.0.0",
+  "description": "Imans sales analytics for Brazilian sellers: sales across ERPs and marketplaces (Olist Tiny, Bling, Mercado Livre, Shopee, Shopify), margin, finance reconciliation, pricing, tasks and processes, through the Imans MCP server.",
   "author": {
-    "name": "Imans AI"
+    "name": "Imans AI",
+    "email": "support@imans.ai",
+    "url": "https://imans.ai"
   },
-  "homepage": "https://github.com/imans-ai/imans-cli",
+  "homepage": "https://imans.ai/docs/mcp-connectors",
   "repository": "https://github.com/imans-ai/imans-claude-plugin",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "privacyPolicyUrl": "https://imans.ai/privacy-policy",
+  "keywords": [
+    "imans",
+    "sales",
+    "analytics",
+    "erp",
+    "marketplace",
+    "ecommerce",
+    "brazil",
+    "olist-tiny",
+    "bling",
+    "mercado-livre",
+    "shopee",
+    "pricing",
+    "finance"
+  ]
 }

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "name": "imans",
+  "description": "Plugins published by Imans AI.",
+  "owner": {
+    "name": "Imans AI",
+    "email": "support@imans.ai"
+  },
+  "plugins": [
+    {
+      "name": "imans",
+      "source": "./",
+      "description": "Imans sales analytics for Brazilian sellers through the Imans MCP server.",
+      "category": "analytics",
+      "homepage": "https://imans.ai/docs/mcp-connectors"
+    }
+  ]
+}

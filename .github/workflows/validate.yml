@@ -1,0 +1,26 @@
+name: validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+      - name: Validate plugin and marketplace
+        run: claude plugin validate --strict .
+      - name: Check MCP URL and version header match the manifest
+        run: |
+          version=$(jq -r .version .claude-plugin/plugin.json)
+          header=$(jq -r '.mcpServers.imans.headers["X-Imans-Client"]' .mcp.json)
+          url=$(jq -r '.mcpServers.imans.url' .mcp.json)
+          test "$header" = "claude-plugin/$version" || { echo "X-Imans-Client ($header) != claude-plugin/$version"; exit 1; }
+          test "$url" = "https://mcp.imans.ai/mcp" || { echo "unexpected MCP URL $url"; exit 1; }

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "imans": {
+      "type": "http",
+      "url": "https://mcp.imans.ai/mcp",
+      "headers": {
+        "X-Imans-Client": "claude-plugin/2.0.0"
+      }
+    }
+  }
+}
