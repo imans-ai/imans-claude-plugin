@@ -19,7 +19,7 @@ or endpoints (`mcp-review@anthropic.com`).
 - **Privacy policy:** https://imans.ai/privacy-policy
 - **Terms:** https://imans.ai/terms-of-service
 - **Support contact:** support@imans.ai
-- **Icon:** `.claude-plugin/icon.png` (1024×1024). The portal keeps the icon from the first save.
+- **Icon:** `.claude-plugin/icon.png` (1024×1024, same artwork as the Shopify App Store icon: coral symbol on white). The portal keeps the icon from the first save.
 - **Slug:** `imans` (permanent)
 
 **Description (≤2000):**
